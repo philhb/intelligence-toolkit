@@ -291,6 +291,7 @@ def create(sv: ds_variables.SessionVariables, workflow: None):
                     selection.sort(
                         key=lambda x: x["attribute"] + val_separator + x["value"]
                     )
+                    
                     selection_key = att_separator.join(
                         [x["attribute"] + val_separator + x["value"] for x in selection]
                     )
@@ -441,12 +442,10 @@ def create(sv: ds_variables.SessionVariables, workflow: None):
                         time_attribute = st.selectbox(
                             "Time attribute",
                             options=time_options,
-                            index=time_options.index(
-                                chart_individual_configuration["time_attribute"]
+                            index=time_options.index(chart_individual_configuration["time_attribute"])
                                 if chart_individual_configuration["time_attribute"]
                                 in sdf.columns.to_numpy()
-                                else None,
-                            ),
+                                else 0
                         )
                         series_attributes = st.multiselect(
                             "Series attributes",
@@ -501,35 +500,44 @@ def create(sv: ds_variables.SessionVariables, workflow: None):
                         st.markdown("##### Configure flow (alluvial) chart")
                         attribute_type_options = [""] + list(sdf.columns.to_numpy())
                         highlight_options = ["", *options]
+                        source_attribute_index = (
+                            attribute_type_options.index(
+                                chart_individual_configuration["source_attribute"]
+                            )
+                            if chart_individual_configuration["source_attribute"]
+                            in attribute_type_options
+                            else 0
+                        )
                         source_attribute = st.selectbox(
                             "Source/origin attribute type",
                             options=attribute_type_options,
-                            index=attribute_type_options.index(
-                                chart_individual_configuration["source_attribute"]
-                                if chart_individual_configuration["source_attribute"]
-                                in attribute_type_options
-                                else None,
-                            ),
+                            index=source_attribute_index,
+                        )
+                        target_attribute_index = (
+                            attribute_type_options.index(
+                                chart_individual_configuration["target_attribute"]
+                            )
+                            if chart_individual_configuration["target_attribute"]
+                            in attribute_type_options
+                            else 0
                         )
                         target_attribute = st.selectbox(
                             "Target/destination attribute type",
                             options=attribute_type_options,
-                            index=attribute_type_options.index(
-                                chart_individual_configuration["target_attribute"]
-                                if chart_individual_configuration["target_attribute"]
-                                in attribute_type_options
-                                else None,
-                            ),
+                            index=target_attribute_index,
+                        )
+                        highlight_attribute_index = (
+                            attribute_type_options.index(
+                                chart_individual_configuration["highlight_attribute"]
+                            )
+                            if chart_individual_configuration["highlight_attribute"]
+                            in attribute_type_options
+                            else 0
                         )
                         highlight_attribute = st.selectbox(
                             "Highlight attribute",
                             options=highlight_options,
-                            index=highlight_options.index(
-                                chart_individual_configuration["highlight_attribute"]
-                                if chart_individual_configuration["highlight_attribute"]
-                                in highlight_options
-                                else None,
-                            ),
+                            index=highlight_attribute_index,
                         )
 
                         if (
